@@ -1,6 +1,7 @@
 import graphene
 from graphene import relay
 from graphene_django.types import DjangoObjectType
+# Not sure why, but importing this allows conversion of PointFields
 from graphql_geojson import GeoJSONType
 from server.properties.models import (
     Property, LettingAgency, City, CityArea, PropertyPhoto
@@ -18,11 +19,10 @@ class PropertyPhotoConnection(relay.Connection):
         node = PropertyPhotoType
 
 
-class PropertyType(GeoJSONType):
+class PropertyType(DjangoObjectType):
     class Meta:
         model = Property
         interfaces = (relay.Node, )
-        geojson_field = 'location'
 
     node = relay.Node.Field()
     photos = relay.ConnectionField(PropertyPhotoConnection)
