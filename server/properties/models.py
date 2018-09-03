@@ -1,5 +1,8 @@
 from django.contrib.gis.db import models
 from django.contrib.auth import get_user_model
+import geocoder
+from django.contrib.gis.geos import Point
+from django.core.exceptions import ValidationError
 
 
 class City(models.Model):
@@ -46,7 +49,7 @@ class Property(models.Model):
     street = models.CharField(max_length=50)
     area = models.ForeignKey('CityArea', on_delete=models.CASCADE)
     postcode = models.CharField(max_length=10)
-    location = models.PointField()
+    location = models.PointField(blank=True)
 
     price = models.IntegerField(verbose_name="Total price per month")
     deposit = models.IntegerField(null=True)
@@ -60,13 +63,13 @@ class Property(models.Model):
     double_bedrooms = models.IntegerField()
     single_bedrooms = models.IntegerField()
     total_area = models.IntegerField(
-        verbose_name="Total area in square metres", null=True)
+        verbose_name="Total area in square metres", null=True, blank=True)
     bathrooms = models.IntegerField()
     ensuites = models.IntegerField()
 
     # True values must be a positive thing
-    furnished = models.BooleanField()
-    dishwasher = models.BooleanField()
+    furnished = models.NullBooleanField()
+    dishwasher = models.NullBooleanField()
     bath = models.NullBooleanField()
     shower = models.NullBooleanField()
     garden = models.NullBooleanField()
@@ -89,6 +92,17 @@ class Property(models.Model):
     def __str__(self):
         return "{} {}, {}, {}".format(self.name, self.street, self.area,
                                       self.area.city, self.postcode)
+
+    def clean(self):
+        g = geocoder.google(self.postcode, max_rows=1)
+
+        if g.error:
+            raise ValidationError(
+                "Couldn't geocode postcode <{}>.\n Are you sure that it is " +
+                "valid (try Google Maps)?".format(g.error))
+
+        lat, lng = g.latlng
+        self.location = Point(lng, lat)
 
 
 class PropertyPhoto(models.Model):

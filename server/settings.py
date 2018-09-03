@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'graphene_django',
     'server.properties',
     'django.contrib.gis',
-    'corsheaders'
+    'corsheaders',
+    'mapwidgets'
 ]
 
 MIDDLEWARE = [
@@ -122,3 +123,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
+
+MAP_WIDGETS = {
+    'GooglePointFieldWidget': (
+        ('zoom', 15),
+        ('mapCenterLocationName', 'Oxford'),
+        ('GooglePlaceAutocompleteOptions', {
+         'componentRestrictions': {'country': 'uk'}}),
+        ('markerFitZoom', 12),
+    ),
+    'GOOGLE_MAP_API_KEY': 'AIzaSyD6fgy1K4D5fIsJKU3JyXkd1narRswi5Cs'
+}

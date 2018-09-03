@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.gis.db import models
 from server.properties.models import (
     City,
     CityArea,
@@ -9,13 +10,20 @@ from server.properties.models import (
     PropertyReview,
     AgencyReview,
 )
+from mapwidgets.widgets import GooglePointFieldWidget
+
+
+class PropertyAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.PointField: {"widget": GooglePointFieldWidget}
+    }
 
 
 admin.site.register(City)
 admin.site.register(CityArea)
 admin.site.register(LettingAgency)
 admin.site.register(Landlord)
-admin.site.register(Property)
+admin.site.register(Property, PropertyAdmin)
 admin.site.register(PropertyPhoto)
 admin.site.register(PropertyReview)
 admin.site.register(AgencyReview)
