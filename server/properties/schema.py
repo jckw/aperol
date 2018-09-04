@@ -23,6 +23,7 @@ class PropertyType(DjangoObjectType):
     class Meta:
         model = Property
         interfaces = (relay.Node, )
+        exclude_fields = ('name',)
 
     node = relay.Node.Field()
     photos = relay.ConnectionField(PropertyPhotoConnection)
