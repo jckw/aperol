@@ -60,7 +60,6 @@ class CityAreaType(DjangoObjectType):
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
 
-    all_properties = relay.ConnectionField(PropertyConnection)
     property = relay.Node.Field(PropertyType)
     agency = relay.Node.Field(LettingAgencyType)
     filtered_properties = DjangoFilterConnectionField(
