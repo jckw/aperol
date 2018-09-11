@@ -1,11 +1,13 @@
 import graphene
 from graphene import relay
 from graphene_django.types import DjangoObjectType
-# Not sure why, but importing this allows conversion of PointFields
-from graphql_geojson import GeoJSONType
+# Contains a converter for Point to Geometry Field
+from graphql_geojson import converter
+from graphene_django.filter import DjangoFilterConnectionField
 from server.properties.models import (
     Property, LettingAgency, City, CityArea, PropertyPhoto
 )
+from server.properties.filters import PropertyFilter
 
 
 class PropertyPhotoType(DjangoObjectType):
@@ -61,6 +63,8 @@ class Query(graphene.ObjectType):
     all_properties = relay.ConnectionField(PropertyConnection)
     property = relay.Node.Field(PropertyType)
     agency = relay.Node.Field(LettingAgencyType)
+    filtered_properties = DjangoFilterConnectionField(
+        PropertyType, filterset_class=PropertyFilter)
 
     def resolve_all_properties(self, info, **kwargs):
         return Property.objects.all()
