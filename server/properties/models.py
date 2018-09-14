@@ -51,7 +51,10 @@ class Property(models.Model):
     postcode = models.CharField(max_length=10)
     location = models.PointField(blank=True)
 
-    price = models.IntegerField(verbose_name="Total price per month")
+    price = models.IntegerField(
+        verbose_name="Minimum price per month per person")
+    total_price = models.IntegerField(
+        verbose_name="Total price per month for all tenants")
     deposit = models.IntegerField(null=True)
     agency = models.ForeignKey('LettingAgency', on_delete=models.CASCADE)
     landlord = models.ForeignKey(
