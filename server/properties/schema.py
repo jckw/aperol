@@ -4,6 +4,7 @@ from graphene_django.types import DjangoObjectType
 # Contains a converter for Point to Geometry Field
 from graphql_geojson import converter
 from graphene_django.filter import DjangoFilterConnectionField
+from django.db.models import Max, Min
 from server.properties.models import (
     Property, LettingAgency, City, CityArea, PropertyPhoto
 )
@@ -57,6 +58,27 @@ class CityAreaType(DjangoObjectType):
         interfaces = (relay.Node, )
 
 
+class MetaType(graphene.ObjectType):
+    max_price = graphene.Int()
+    min_price = graphene.Int()
+    max_bedrooms = graphene.Int()
+    min_bedrooms = graphene.Int()
+
+    def resolve_max_price(self, info):
+        return Property.objects.all().aggregate(Max('price'))['price__max']
+
+    def resolve_min_price(self, info):
+        return Property.objects.all().aggregate(Min('price'))['price__min']
+
+    def resolve_max_bedrooms(self, info):
+        return Property.objects.all().aggregate(
+            Max('bedrooms'))['bedrooms__max']
+
+    def resolve_min_bedrooms(self, info):
+        return Property.objects.all().aggregate(
+            Min('bedrooms'))['bedrooms__min']
+
+
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
 
@@ -64,6 +86,10 @@ class Query(graphene.ObjectType):
     agency = relay.Node.Field(LettingAgencyType)
     filtered_properties = DjangoFilterConnectionField(
         PropertyType, filterset_class=PropertyFilter)
+    meta = graphene.Field(MetaType)
 
     def resolve_all_properties(self, info, **kwargs):
         return Property.objects.all()
+
+    def resolve_meta(self, info):
+        return MetaType()
