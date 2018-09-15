@@ -1,8 +1,8 @@
 {
-  "name": "SnapSpace GraphQL API",
-  "description": "A GraphQL API for the Snapspace site.",
+  "name": "Aperol",
+  "description": "🍹 Backend for movemaison.com",
   "image": "heroku/python",
-  "repository": "https://github.com/heroku/python-getting-started",
+  "repository": "https://github.com/jckw/aperol",
   "keywords": ["python", "django"],
   "addons": ["heroku-postgresql"],
   "env": {
