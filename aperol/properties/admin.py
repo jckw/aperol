@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.gis.db import models
-from server.properties.models import (
+from aperol.properties.models import (
     City,
     CityArea,
     LettingAgency,

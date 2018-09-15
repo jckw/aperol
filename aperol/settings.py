@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
-    'server.properties',
+    'aperol.properties',
     'django.contrib.gis',
     'corsheaders',
     'mapwidgets'
@@ -45,7 +45,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'server.urls'
+ROOT_URLCONF = 'aperol.urls'
 
 TEMPLATES = [
     {
@@ -63,7 +63,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'server.wsgi.application'
+WSGI_APPLICATION = 'aperol.wsgi.application'
 
 
 # Database
@@ -81,7 +81,7 @@ DATABASES = {
 }
 
 GRAPHENE = {
-    'SCHEMA': 'server.schema.schema'
+    'SCHEMA': 'aperol.schema.schema'
 }
 
 # Password validation

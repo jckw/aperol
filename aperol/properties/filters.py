@@ -1,4 +1,4 @@
-from server.properties import models
+from aperol.properties import models
 from graphql_geojson.filters import GeometryFilterSet
 import django_filters
 

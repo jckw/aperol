@@ -5,10 +5,10 @@ from graphene_django.types import DjangoObjectType
 from graphql_geojson import converter
 from graphene_django.filter import DjangoFilterConnectionField
 from django.db.models import Max, Min
-from server.properties.models import (
+from aperol.properties.models import (
     Property, LettingAgency, City, CityArea, PropertyPhoto
 )
-from server.properties.filters import PropertyFilter
+from aperol.properties.filters import PropertyFilter
 
 
 class PropertyPhotoType(DjangoObjectType):

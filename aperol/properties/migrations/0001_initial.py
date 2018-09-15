@@ -4,7 +4,7 @@ from django.conf import settings
 import django.contrib.gis.db.models.fields
 from django.db import migrations, models
 import django.db.models.deletion
-import server.properties.models
+import aperol.properties.models
 
 
 class Migration(migrations.Migration):
@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
                 ('burglar_alarm', models.NullBooleanField()),
                 ('agency', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='properties.LettingAgency')),
                 ('area', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='properties.CityArea')),
-                ('landlord', models.ForeignKey(default=server.properties.models.get_blank_landlord, on_delete=django.db.models.deletion.CASCADE, to='properties.Landlord')),
+                ('landlord', models.ForeignKey(default=aperol.properties.models.get_blank_landlord, on_delete=django.db.models.deletion.CASCADE, to='properties.Landlord')),
             ],
         ),
         migrations.CreateModel(
