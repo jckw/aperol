@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
-    command: ./compose/local/django/start
+    command: /start
     volumes:
       - .:/code
     ports:

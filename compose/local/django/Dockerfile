@@ -13,4 +13,7 @@ ADD requirements.txt /code
 
 RUN pip install -r requirements.txt
 
+COPY ./compose/local/django/start /start
+RUN chmod +x /start
+
 ADD . /code/
