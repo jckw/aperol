@@ -1,0 +1,36 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "containerDefinitions": [
+    {
+      "essential": true,
+      "image": "mdillon/postgis",
+      "name": "db"
+    },
+    {
+      "command": ["/start"],
+      "essential": true,
+      "mountPoints": [
+        {
+          "containerPath": "/code",
+          "sourceVolume": "_"
+        }
+      ],
+      "name": "django",
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "hostPort": 8000
+        }
+      ]
+    }
+  ],
+  "family": "",
+  "volumes": [
+    {
+      "host": {
+        "sourcePath": "."
+      },
+      "name": "_"
+    }
+  ]
+}
