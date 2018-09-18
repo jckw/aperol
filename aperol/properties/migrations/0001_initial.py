@@ -5,6 +5,7 @@ import django.contrib.gis.db.models.fields
 from django.db import migrations, models
 import django.db.models.deletion
 import aperol.properties.models
+from django.contrib.postgres.operations import CreateExtension
 
 
 class Migration(migrations.Migration):
@@ -16,6 +17,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        CreateExtension('postgis'),
         migrations.CreateModel(
             name='AgencyReview',
             fields=[
