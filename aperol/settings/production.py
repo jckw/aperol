@@ -7,6 +7,8 @@ SECRET_KEY = os.environ['SECRET_KEY']
 ALLOWED_HOSTS = ['app.movemaison.com',
                  'movemaison.com', '.elasticbeanstalk.com']
 
+CORS_ORIGIN_WHITELIST = ['movemaison.com', 'app.movemaison.com']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
