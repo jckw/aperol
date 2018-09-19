@@ -21,7 +21,8 @@ INSTALLED_APPS = [
     'aperol.properties',
     'django.contrib.gis',
     'corsheaders',
-    'mapwidgets'
+    'mapwidgets',
+    'storages'
 ]
 
 MIDDLEWARE = [
