@@ -9,8 +9,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'snapspace',
-        'USER': 'geo',
+        'NAME': 'movemaison',
+        'USER': 'aperol',
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '',
