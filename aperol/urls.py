@@ -11,5 +11,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^graphql', csrf_exempt(GraphQLView.as_view(graphiql=True,
                                                      schema=schema))),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Not suitable for production!
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # See https://docs.djangoproject.com/en/2.1/howto/static-files/deployment/

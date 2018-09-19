@@ -92,12 +92,13 @@ class Property(models.Model):
                                       self.area.city, self.postcode)
 
     def clean(self):
-        g = geocoder.google(self.postcode, max_rows=1)
+        g = geocoder.osm(self.postcode, max_rows=1)
 
         if g.error:
             raise ValidationError(
-                "Couldn't geocode postcode <{}>.\n Are you sure that it is " +
-                "valid (try Google Maps)? {}".format(self.postcode, g.error))
+                ("Couldn't geocode postcode <{}>.\n Are you sure that it is " +
+                 "valid (try Open Street Maps)? {}")
+                .format(self.postcode, g.error))
 
         lat, lng = g.latlng
         self.location = Point(lng, lat)
