@@ -36,12 +36,7 @@ class Landlord(models.Model):
         return self.name if self.name is not None else "#" + str(self.pk)
 
 
-def get_blank_landlord():
-    return Landlord.objects.create()
-
-
 class Property(models.Model):
-    # TODO: Filter the number from API requests - backend only
     # TODO: Trim number and make case insensitive for uniqueness
     # TODO: Are number, street, and postcode unique? No, not necessarily but
     #       the post office must rely on it being
@@ -56,10 +51,10 @@ class Property(models.Model):
     total_price = models.IntegerField(
         verbose_name="Total price per month for all tenants")
     deposit = models.IntegerField(null=True)
-    agency = models.ForeignKey('LettingAgency', on_delete=models.CASCADE)
+    agency = models.ForeignKey(
+        'LettingAgency', on_delete=models.CASCADE, null=True, blank=True)
     landlord = models.ForeignKey(
-        'Landlord', default=get_blank_landlord,
-        on_delete=models.CASCADE)
+        'Landlord', on_delete=models.CASCADE, null=True, blank=True)
 
     # Features
     bedrooms = models.IntegerField()
@@ -102,7 +97,7 @@ class Property(models.Model):
         if g.error:
             raise ValidationError(
                 "Couldn't geocode postcode <{}>.\n Are you sure that it is " +
-                "valid (try Google Maps)?".format(g.error))
+                "valid (try Google Maps)? {}".format(self.postcode, g.error))
 
         lat, lng = g.latlng
         self.location = Point(lng, lat)
@@ -117,15 +112,3 @@ class PropertyPhoto(models.Model):
         return "{}, {} - {}".format(self.property.street,
                                     self.property.postcode, 'Agency Photo' if
                                     self.agency_photo else 'Tenant Photo')
-
-
-class PropertyReview(models.Model):
-    user = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE)  # TODO: Sentinal user
-    would_recommend = models.BooleanField()
-
-
-class AgencyReview(models.Model):
-    user = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE)  # TODO:
-    would_recommend = models.BooleanField()

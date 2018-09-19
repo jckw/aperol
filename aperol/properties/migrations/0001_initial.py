@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
                 ('burglar_alarm', models.NullBooleanField()),
                 ('agency', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='properties.LettingAgency')),
                 ('area', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='properties.CityArea')),
-                ('landlord', models.ForeignKey(default=aperol.properties.models.get_blank_landlord, on_delete=django.db.models.deletion.CASCADE, to='properties.Landlord')),
+                ('landlord', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='properties.Landlord')),
             ],
         ),
         migrations.CreateModel(
