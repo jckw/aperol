@@ -1,1 +1,1 @@
-web: gunicorn aperol.wsgi --log-file -
+web: gunicorn aperol.wsgi
