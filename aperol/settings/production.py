@@ -20,10 +20,6 @@ if 'RDS_DB_NAME' in os.environ:
             'PORT': os.environ['RDS_PORT'],
         }
     }
-else:
-    # Assume we're using Heroku
-    import django_heroku
-    django_heroku.settings(locals(), staticfiles=False)
 
 
 STATIC_ROOT = 'static'
