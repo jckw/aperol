@@ -1,5 +1,6 @@
 import graphene
 from graphene import relay
+from graphql import GraphQLError
 from graphene_django.types import DjangoObjectType
 # Contains a converter for Point to Geometry Field
 from graphql_geojson import converter
@@ -82,11 +83,24 @@ class MetaType(graphene.ObjectType):
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
 
-    property = relay.Node.Field(PropertyType)
+    property = graphene.Field(
+        PropertyType,
+        city_slug=graphene.String(required=True),
+        area_slug=graphene.String(required=True),
+        property_slug=graphene.String(required=True))
     agency = relay.Node.Field(LettingAgencyType)
     filtered_properties = DjangoFilterConnectionField(
         PropertyType, filterset_class=PropertyFilter)
     meta = graphene.Field(MetaType)
+
+    def resolve_property(self, info, city_slug, area_slug, property_slug):
+        try:
+            return Property.objects.filter(
+                slug=property_slug,
+                area__slug=area_slug,
+                area__city__slug=city_slug)[0]
+        except IndexError:
+            raise GraphQLError('No property found matching given input.')
 
     def resolve_meta(self, info):
         return MetaType()
