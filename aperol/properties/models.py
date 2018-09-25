@@ -3,10 +3,12 @@ from django.contrib.auth import get_user_model
 import geocoder
 from django.contrib.gis.geos import Point
 from django.core.exceptions import ValidationError
+from django_extensions.db.fields import AutoSlugField
 
 
 class City(models.Model):
     name = models.CharField(max_length=50)
+    slug = AutoSlugField(populate_from=['name'], unique=True)
 
     def __str__(self):
         return self.name
@@ -15,6 +17,7 @@ class City(models.Model):
 class CityArea(models.Model):
     name = models.CharField(max_length=50)
     city = models.ForeignKey('City', on_delete=models.CASCADE)
+    slug = AutoSlugField(populate_from=['name'], unique=True)
 
     def __str__(self):
         return "{}, {}".format(self.name, self.city.name)
@@ -22,6 +25,7 @@ class CityArea(models.Model):
 
 class LettingAgency(models.Model):
     name = models.CharField(max_length=50)
+    slug = AutoSlugField(populate_from=['name'], unique=True)
 
     # TODO: Fee information
 
@@ -45,6 +49,7 @@ class Property(models.Model):
     area = models.ForeignKey('CityArea', on_delete=models.CASCADE)
     postcode = models.CharField(max_length=10)
     location = models.PointField(blank=True)
+    slug = AutoSlugField(populate_from=['street', 'pk'], unique=True)
 
     price = models.IntegerField(
         verbose_name="Minimum price per month per person")

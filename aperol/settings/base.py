@@ -22,7 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'corsheaders',
     'mapwidgets',
-    'storages'
+    'storages',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [

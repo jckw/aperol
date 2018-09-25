@@ -88,8 +88,5 @@ class Query(graphene.ObjectType):
         PropertyType, filterset_class=PropertyFilter)
     meta = graphene.Field(MetaType)
 
-    def resolve_all_properties(self, info, **kwargs):
-        return Property.objects.all()
-
     def resolve_meta(self, info):
         return MetaType()
