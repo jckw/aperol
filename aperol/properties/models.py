@@ -50,6 +50,8 @@ class Property(models.Model):
     postcode = models.CharField(max_length=10)
     location = models.PointField(blank=True)
     slug = AutoSlugField(populate_from=['street', 'pk'], unique=True)
+    variant = models.ForeignKey(
+        'PropertyVariant', on_delete=models.CASCADE, null=True, blank=True)
 
     price = models.IntegerField(
         verbose_name="Minimum price per month per person")
@@ -70,7 +72,7 @@ class Property(models.Model):
     bathrooms = models.IntegerField()
     ensuites = models.IntegerField()
 
-    # True values must be a positive thing
+    # True values must indicate having something
     furnished = models.NullBooleanField()
     dishwasher = models.NullBooleanField()
     bath = models.NullBooleanField()
@@ -118,3 +120,7 @@ class PropertyPhoto(models.Model):
         return "{}, {} - {}".format(self.property.street,
                                     self.property.postcode, 'Agency Photo' if
                                     self.agency_photo else 'Tenant Photo')
+
+
+class PropertyVariant(models.Model):
+    name = models.CharField(max_length=50, help_text="The variant name")

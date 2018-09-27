@@ -7,7 +7,7 @@ from graphql_geojson import converter
 from graphene_django.filter import DjangoFilterConnectionField
 from django.db.models import Max, Min
 from aperol.properties.models import (
-    Property, LettingAgency, City, CityArea, PropertyPhoto
+    Property, LettingAgency, City, CityArea, PropertyPhoto, PropertyVariant
 )
 from aperol.properties.filters import PropertyFilter
 
@@ -21,6 +21,12 @@ class PropertyPhotoType(DjangoObjectType):
 class PropertyPhotoConnection(relay.Connection):
     class Meta:
         node = PropertyPhotoType
+
+
+class PropertyVariantType(DjangoObjectType):
+    class Meta:
+        model = PropertyVariant
+        interfaces = (relay.Node, )
 
 
 class PropertyType(DjangoObjectType):
