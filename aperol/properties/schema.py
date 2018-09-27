@@ -31,9 +31,16 @@ class PropertyType(DjangoObjectType):
 
     node = relay.Node.Field()
     photos = relay.ConnectionField(PropertyPhotoConnection)
+    url = graphene.String()
 
     def resolve_photos(self, info, **kwargs):
         return PropertyPhoto.objects.filter(property=self)
+
+    def resolve_url(self, info):
+        return "/properties/{}/{}/{}".format(
+            self.area.city.slug,
+            self.area.slug,
+            self.slug)
 
 
 class PropertyConnection(relay.Connection):
