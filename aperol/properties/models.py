@@ -6,6 +6,11 @@ from django.core.exceptions import ValidationError
 from django_extensions.db.fields import AutoSlugField
 
 
+def get_apartment_variant():
+    v, c = PropertyVariant.objects.get_or_create(name="apartment")
+    return v.pk
+
+
 class City(models.Model):
     name = models.CharField(max_length=50)
     slug = AutoSlugField(populate_from=['name'], unique=True)
@@ -52,7 +57,9 @@ class Property(models.Model):
     location = models.PointField(blank=True)
     slug = AutoSlugField(populate_from=['street', 'pk'], unique=True)
     variant = models.ForeignKey(
-        'PropertyVariant', on_delete=models.CASCADE, null=True, blank=True)
+        'PropertyVariant',
+        on_delete=models.CASCADE,
+        default=get_apartment_variant)
 
     price = models.IntegerField(
         verbose_name="Minimum price per month per person")
@@ -127,4 +134,8 @@ class PropertyPhoto(models.Model):
 
 
 class PropertyVariant(models.Model):
-    name = models.CharField(max_length=50, help_text="The variant name")
+    name = models.CharField(
+        max_length=50, help_text="The variant name", unique=True)
+
+    def __str__(self):
+        return self.name
