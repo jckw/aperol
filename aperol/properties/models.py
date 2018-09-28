@@ -65,6 +65,7 @@ class Property(models.Model):
         'Landlord', on_delete=models.CASCADE, null=True, blank=True)
 
     lease_length = models.DurationField(null=True, blank=True)
+    lease_start_date = models.DateField(null=True, blank=True)
 
     # Features
     bedrooms = models.IntegerField()
