@@ -64,6 +64,8 @@ class Property(models.Model):
     landlord = models.ForeignKey(
         'Landlord', on_delete=models.CASCADE, null=True, blank=True)
 
+    lease_length = models.DurationField(null=True, blank=True)
+
     # Features
     bedrooms = models.IntegerField()
     double_bedrooms = models.IntegerField()
