@@ -61,27 +61,27 @@ class Property(models.Model):
         on_delete=models.CASCADE,
         default=get_apartment_variant)
 
-    price = models.IntegerField(
+    price = models.PositiveIntegerField(
         verbose_name="Minimum price per month per person")
-    total_price = models.IntegerField(
+    total_price = models.PositiveIntegerField(
         verbose_name="Total price per month for all tenants")
-    deposit = models.IntegerField(null=True)
+    deposit = models.PositiveIntegerField(null=True)
     agency = models.ForeignKey(
         'LettingAgency', on_delete=models.CASCADE, null=True, blank=True)
     landlord = models.ForeignKey(
         'Landlord', on_delete=models.CASCADE, null=True, blank=True)
 
-    lease_length = models.DurationField(null=True, blank=True)
+    lease_length_months = models.PositiveIntegerField(null=True, blank=True)
     lease_start_date = models.DateField(null=True, blank=True)
 
     # Features
-    bedrooms = models.IntegerField()
-    double_bedrooms = models.IntegerField()
-    single_bedrooms = models.IntegerField()
-    total_area = models.IntegerField(
+    bedrooms = models.PositiveIntegerField()
+    double_bedrooms = models.PositiveIntegerField()
+    single_bedrooms = models.PositiveIntegerField()
+    total_area = models.PositiveIntegerField(
         verbose_name="Total area in square metres", null=True, blank=True)
-    bathrooms = models.IntegerField()
-    ensuites = models.IntegerField()
+    bathrooms = models.PositiveIntegerField()
+    ensuites = models.PositiveIntegerField()
 
     # True values must indicate having something
     furnished = models.NullBooleanField()
