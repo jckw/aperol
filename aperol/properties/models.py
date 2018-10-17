@@ -4,6 +4,14 @@ import geocoder
 from django.contrib.gis.geos import Point
 from django.core.exceptions import ValidationError
 from django_extensions.db.fields import AutoSlugField
+from aperol.properties.data import BingMapsRoutes
+import os
+import math
+
+
+routes = BingMapsRoutes(os.environ.get(
+    'BING_MAPS_KEY'
+    'AhQUdnsAv1EPYZ62GZJ_7yoyb3SQnHEHUrq9MeuDZWHhOqwN7ahF5C4awvfZxu8Q'))
 
 
 def get_apartment_variant():
@@ -165,8 +173,32 @@ class PropertyLandmarkDistance(models.Model):
         blank=True
     )
 
+    class Meta:
+        unique_together = (("property", "landmark"),)
+
     def __str__(self):
         return "{} - {}".format(self.property, self.landmark)
 
-    class Meta:
-        unique_together = (("property", "landmark"),)
+    def clean(self):
+        start_lng, start_lat = (
+            self.property.location.x, self.property.location.y)
+        end_lng, end_lat = (
+            self.landmark.location.x, self.landmark.location.y)
+
+        result = routes.calculate_distance(
+            (start_lat, start_lng), (end_lat, end_lng))
+
+        distance = result.get('travelDistance', -1)
+
+        if distance < 0:
+            raise Exception('Distance could not be calculated.')
+
+        CYCLING_SPEED = 15.5  # in KM/h
+        cycling_time = distance/CYCLING_SPEED * 60
+
+        WALKING_SPEED = 5.0  # in KM/h
+        walking_time = distance/WALKING_SPEED * 60
+
+        self.distance = distance
+        self.cycling_time = math.ceil(cycling_time)
+        self.walking_time = math.ceil(walking_time)

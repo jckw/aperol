@@ -41,4 +41,4 @@ class BingMapsRoutes(object):
         return ';'.join(map(BingMapsRoutes.strf_latlng, latlngs))
 
     def calculate_distance(self, origin, destination):
-        return self.calculate_distance_matrix([origin], [destination])
+        return self.calculate_distance_matrix([origin], [destination])[0]
