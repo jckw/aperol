@@ -32,8 +32,13 @@ class BingMapsRoutes(object):
         # Not sure when different resourceSets and resources are returned.
         return data["resourceSets"][0]["resources"][0]["results"]
 
-    def strf_latlng(self, latlng):
+    @staticmethod
+    def strf_latlng(latlng):
         return "{},{}".format(*latlng)
 
-    def strf_latlngs(self, latlngs):
-        return ';'.join(map(self.strf_latlng, latlngs))
+    @staticmethod
+    def strf_latlngs(latlngs):
+        return ';'.join(map(BingMapsRoutes.strf_latlng, latlngs))
+
+    def calculate_distance(self, origin, destination):
+        return self.calculate_distance_matrix([origin], [destination])

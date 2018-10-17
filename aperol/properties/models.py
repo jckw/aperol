@@ -139,3 +139,34 @@ class PropertyVariant(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Landmark(models.Model):
+    name = models.CharField(max_length=70)
+    location = models.PointField()
+
+    def __str__(self):
+        return "{}, {}".format(self.name, self.city)
+
+
+class PropertyLandmarkDistance(models.Model):
+    property = models.ForeignKey('Property', on_delete=models.CASCADE)
+    landmark = models.ForeignKey('Landmark', on_delete=models.CASCADE)
+    distance = models.FloatField(
+        help_text='Distance in kilometers between the property and landmark',
+        blank=True
+    )
+    cycling_time = models.IntegerField(
+        help_text='Cycling time between property and landmark in minutes',
+        blank=True
+    )
+    walking_time = models.IntegerField(
+        help_text='Walking time between property and landmark in minutes',
+        blank=True
+    )
+
+    def __str__(self):
+        return "{} - {}".format(self.property, self.landmark)
+
+    class Meta:
+        unique_together = (("property", "landmark"),)
