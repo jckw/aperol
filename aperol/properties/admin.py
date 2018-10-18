@@ -6,7 +6,9 @@ from aperol.properties.models import (
     LettingAgency,
     Landlord,
     Property,
-    PropertyPhoto
+    PropertyPhoto,
+    PropertyLandmarkDistance,
+    Landmark
 )
 from mapwidgets.widgets import GooglePointFieldWidget
 
@@ -23,3 +25,5 @@ admin.site.register(LettingAgency)
 admin.site.register(Landlord)
 admin.site.register(Property, PropertyAdmin)
 admin.site.register(PropertyPhoto)
+admin.site.register(PropertyLandmarkDistance)
+admin.site.register(Landmark, PropertyAdmin)
