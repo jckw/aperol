@@ -8,10 +8,11 @@ from aperol.properties.data import BingMapsRoutes
 import os
 import math
 
-
-routes = BingMapsRoutes(os.environ.get(
-    'BING_MAPS_KEY'
-    'AhQUdnsAv1EPYZ62GZJ_7yoyb3SQnHEHUrq9MeuDZWHhOqwN7ahF5C4awvfZxu8Q'))
+key = os.environ.get(
+    'BING_MAPS_KEY',
+    'AhQUdnsAv1EPYZ62GZJ_7yoyb3SQnHEHUrq9MeuDZWHhOqwN7ahF5C4awvfZxu8Q'
+)
+routes = BingMapsRoutes(key)
 
 
 def get_apartment_variant():
@@ -154,7 +155,7 @@ class Landmark(models.Model):
     location = models.PointField()
 
     def __str__(self):
-        return "{}, {}".format(self.name, self.city)
+        return "{}".format(self.name)
 
 
 class PropertyLandmarkDistance(models.Model):
