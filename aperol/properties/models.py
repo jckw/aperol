@@ -180,7 +180,7 @@ class PropertyLandmarkDistance(models.Model):
     def __str__(self):
         return "{} - {}".format(self.property, self.landmark)
 
-    def clean(self):
+    def save(self, *args, **kwargs):
         start_lng, start_lat = (
             self.property.location.x, self.property.location.y)
         end_lng, end_lat = (
@@ -203,3 +203,5 @@ class PropertyLandmarkDistance(models.Model):
         self.distance = distance
         self.cycling_time = math.ceil(cycling_time)
         self.walking_time = math.ceil(walking_time)
+
+        super().save(*args, **kwargs)

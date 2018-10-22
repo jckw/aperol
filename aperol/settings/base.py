@@ -18,7 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
-    'aperol.properties',
+    'aperol.properties.apps.PropertiesConfig',
     'django.contrib.gis',
     'corsheaders',
     'mapwidgets',
