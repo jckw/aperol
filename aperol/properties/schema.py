@@ -7,9 +7,32 @@ from graphql_geojson import converter
 from graphene_django.filter import DjangoFilterConnectionField
 from django.db.models import Max, Min
 from aperol.properties.models import (
-    Property, LettingAgency, City, CityArea, PropertyPhoto, PropertyVariant
+    Property,
+    LettingAgency,
+    City,
+    CityArea,
+    PropertyPhoto,
+    PropertyVariant,
+    PropertyLandmarkDistance,
+    Landmark
 )
 from aperol.properties.filters import PropertyFilter
+
+
+class LandmarkType(DjangoObjectType):
+    class Meta:
+        model = Landmark
+
+
+class PropertyLandmarkDistanceType(DjangoObjectType):
+    class Meta:
+        model = PropertyLandmarkDistance
+        interfaces = (relay.Node, )
+
+
+class PropertyLandmarkDistanceConnection(relay.Connection):
+    class Meta:
+        node = PropertyLandmarkDistanceType
 
 
 class PropertyPhotoType(DjangoObjectType):
@@ -38,6 +61,8 @@ class PropertyType(DjangoObjectType):
     node = relay.Node.Field()
     photos = relay.ConnectionField(PropertyPhotoConnection)
     url = graphene.String()
+    landmark_distances = relay.ConnectionField(
+        PropertyLandmarkDistanceConnection)
 
     def resolve_photos(self, info, **kwargs):
         return PropertyPhoto.objects.filter(property=self)
@@ -47,6 +72,9 @@ class PropertyType(DjangoObjectType):
             self.area.city.slug,
             self.area.slug,
             self.slug)
+
+    def resolve_landmark_distances(self, info, **kwargs):
+        return PropertyLandmarkDistance.objects.filter(property=self)
 
 
 class PropertyConnection(relay.Connection):
