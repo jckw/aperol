@@ -22,6 +22,12 @@ from aperol.properties.filters import PropertyFilter
 class LandmarkType(DjangoObjectType):
     class Meta:
         model = Landmark
+        interfaces = (relay.Node, )
+
+
+class LandmarkConnection(relay.Connection):
+    class Meta:
+        node = LandmarkType
 
 
 class PropertyLandmarkDistanceType(DjangoObjectType):
@@ -105,6 +111,7 @@ class MetaType(graphene.ObjectType):
     min_price = graphene.Int()
     max_bedrooms = graphene.Int()
     min_bedrooms = graphene.Int()
+    landmarks = relay.ConnectionField(LandmarkConnection)
 
     def resolve_max_price(self, info):
         return Property.objects.all().aggregate(Max('price'))['price__max']
@@ -119,6 +126,9 @@ class MetaType(graphene.ObjectType):
     def resolve_min_bedrooms(self, info):
         return Property.objects.all().aggregate(
             Min('bedrooms'))['bedrooms__min']
+
+    def resolve_landmarks(self, info):
+        return Landmark.objects.all()
 
 
 class Query(graphene.ObjectType):
