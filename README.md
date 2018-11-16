@@ -50,3 +50,25 @@ Run the server.
 ```
 $ python manage.py runserver
 ```
+
+### Deployment
+
+Deployment is handled through Heroku with Docker.
+
+First of all, log in to Heroku's container repo:
+
+```
+$ heroku container:login
+```
+
+Push the updated image:
+
+```
+$ heroku container:push web
+```
+
+Release the image!
+
+```
+$ heroku container:release web
+```
