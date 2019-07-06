@@ -8,15 +8,13 @@ from aperol.properties.models import (
     Property,
     PropertyPhoto,
     PropertyLandmarkDistance,
-    Landmark
+    Landmark,
 )
 from mapwidgets.widgets import GooglePointFieldWidget
 
 
 class PropertyAdmin(admin.ModelAdmin):
-    formfield_overrides = {
-        models.PointField: {"widget": GooglePointFieldWidget}
-    }
+    formfield_overrides = {models.PointField: {"widget": GooglePointFieldWidget}}
 
 
 admin.site.register(City)

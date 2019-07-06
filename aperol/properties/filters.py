@@ -7,9 +7,9 @@ class PropertyFilter(GeometryFilterSet):
     class Meta:
         model = models.Property
         fields = {
-            'name': ['exact'],
-            'location': ['exact', 'intersects', 'distance_lte'],
-            'price': ['gte', 'lte'],
-            'total_price': ['gte', 'lte'],
-            'bedrooms': ['gte', 'lte']
+            "name": ["exact"],
+            "location": ["exact", "intersects", "distance_lte"],
+            "price": ["gte", "lte"],
+            "total_price": ["gte", "lte"],
+            "bedrooms": ["gte", "lte"],
         }

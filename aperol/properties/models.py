@@ -9,8 +9,7 @@ import os
 import math
 
 key = os.environ.get(
-    'BING_MAPS_KEY',
-    'AhQUdnsAv1EPYZ62GZJ_7yoyb3SQnHEHUrq9MeuDZWHhOqwN7ahF5C4awvfZxu8Q'
+    "BING_MAPS_KEY", "AhQUdnsAv1EPYZ62GZJ_7yoyb3SQnHEHUrq9MeuDZWHhOqwN7ahF5C4awvfZxu8Q"
 )
 routes = BingMapsRoutes(key)
 
@@ -22,7 +21,7 @@ def get_apartment_variant():
 
 class City(models.Model):
     name = models.CharField(max_length=50)
-    slug = AutoSlugField(populate_from=['name'], unique=True)
+    slug = AutoSlugField(populate_from=["name"], unique=True)
 
     def __str__(self):
         return self.name
@@ -30,8 +29,8 @@ class City(models.Model):
 
 class CityArea(models.Model):
     name = models.CharField(max_length=50)
-    city = models.ForeignKey('City', on_delete=models.CASCADE)
-    slug = AutoSlugField(populate_from=['name'], unique=True)
+    city = models.ForeignKey("City", on_delete=models.CASCADE)
+    slug = AutoSlugField(populate_from=["name"], unique=True)
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
@@ -40,7 +39,7 @@ class CityArea(models.Model):
 
 class LettingAgency(models.Model):
     name = models.CharField(max_length=50)
-    slug = AutoSlugField(populate_from=['name'], unique=True)
+    slug = AutoSlugField(populate_from=["name"], unique=True)
 
     # TODO: Fee information
 
@@ -61,24 +60,27 @@ class Property(models.Model):
     #       the post office must rely on it being
     name = models.CharField(max_length=50, help_text="Property number or name")
     street = models.CharField(max_length=50)
-    area = models.ForeignKey('CityArea', on_delete=models.CASCADE)
+    area = models.ForeignKey("CityArea", on_delete=models.CASCADE)
     postcode = models.CharField(max_length=10)
     location = models.PointField(blank=True)
-    slug = AutoSlugField(populate_from=['street', 'pk'], unique=True)
+    slug = AutoSlugField(populate_from=["street", "pk"], unique=True)
     variant = models.ForeignKey(
-        'PropertyVariant',
-        on_delete=models.CASCADE,
-        default=get_apartment_variant)
+        "PropertyVariant", on_delete=models.CASCADE, default=get_apartment_variant
+    )
 
     price = models.PositiveIntegerField(
-        verbose_name="Minimum price per month per person")
+        verbose_name="Minimum price per month per person"
+    )
     total_price = models.PositiveIntegerField(
-        verbose_name="Total price per month for all tenants")
+        verbose_name="Total price per month for all tenants"
+    )
     deposit = models.PositiveIntegerField(null=True)
     agency = models.ForeignKey(
-        'LettingAgency', on_delete=models.CASCADE, null=True, blank=True)
+        "LettingAgency", on_delete=models.CASCADE, null=True, blank=True
+    )
     landlord = models.ForeignKey(
-        'Landlord', on_delete=models.CASCADE, null=True, blank=True)
+        "Landlord", on_delete=models.CASCADE, null=True, blank=True
+    )
 
     lease_length_months = models.PositiveIntegerField(null=True, blank=True)
     lease_start_date = models.DateField(null=True, blank=True)
@@ -88,7 +90,8 @@ class Property(models.Model):
     double_bedrooms = models.PositiveIntegerField()
     single_bedrooms = models.PositiveIntegerField()
     total_area = models.PositiveIntegerField(
-        verbose_name="Total area in square metres", null=True, blank=True)
+        verbose_name="Total area in square metres", null=True, blank=True
+    )
     bathrooms = models.PositiveIntegerField()
     ensuites = models.PositiveIntegerField()
 
@@ -115,17 +118,20 @@ class Property(models.Model):
     burglar_alarm = models.NullBooleanField()
 
     def __str__(self):
-        return "{} {}, {}, {}".format(self.name, self.street, self.area,
-                                      self.area.city, self.postcode)
+        return "{} {}, {}, {}".format(
+            self.name, self.street, self.area, self.area.city, self.postcode
+        )
 
     def clean(self):
         g = geocoder.osm(self.postcode, max_rows=1)
 
         if g.error:
             raise ValidationError(
-                ("Couldn't geocode postcode <{}>.\n Are you sure that it is " +
-                 "valid (try Open Street Maps)? {}")
-                .format(self.postcode, g.error))
+                (
+                    "Couldn't geocode postcode <{}>.\n Are you sure that it is "
+                    + "valid (try Open Street Maps)? {}"
+                ).format(self.postcode, g.error)
+            )
 
         lat, lng = g.latlng
         self.location = Point(lng, lat)
@@ -134,17 +140,18 @@ class Property(models.Model):
 class PropertyPhoto(models.Model):
     photo = models.ImageField()
     agency_photo = models.BooleanField()
-    property = models.ForeignKey('Property', on_delete=models.CASCADE)
+    property = models.ForeignKey("Property", on_delete=models.CASCADE)
 
     def __str__(self):
-        return "{}, {} - {}".format(self.property.street,
-                                    self.property.postcode, 'Agency Photo' if
-                                    self.agency_photo else 'Tenant Photo')
+        return "{}, {} - {}".format(
+            self.property.street,
+            self.property.postcode,
+            "Agency Photo" if self.agency_photo else "Tenant Photo",
+        )
 
 
 class PropertyVariant(models.Model):
-    name = models.CharField(
-        max_length=50, help_text="The variant name", unique=True)
+    name = models.CharField(max_length=50, help_text="The variant name", unique=True)
 
     def __str__(self):
         return self.name
@@ -159,19 +166,16 @@ class Landmark(models.Model):
 
 
 class PropertyLandmarkDistance(models.Model):
-    property = models.ForeignKey('Property', on_delete=models.CASCADE)
-    landmark = models.ForeignKey('Landmark', on_delete=models.CASCADE)
+    property = models.ForeignKey("Property", on_delete=models.CASCADE)
+    landmark = models.ForeignKey("Landmark", on_delete=models.CASCADE)
     distance = models.FloatField(
-        help_text='Distance in kilometers between the property and landmark',
-        blank=True
+        help_text="Distance in kilometers between the property and landmark", blank=True
     )
     cycling_time = models.IntegerField(
-        help_text='Cycling time between property and landmark in minutes',
-        blank=True
+        help_text="Cycling time between property and landmark in minutes", blank=True
     )
     walking_time = models.IntegerField(
-        help_text='Walking time between property and landmark in minutes',
-        blank=True
+        help_text="Walking time between property and landmark in minutes", blank=True
     )
 
     class Meta:
@@ -181,24 +185,21 @@ class PropertyLandmarkDistance(models.Model):
         return "{} - {}".format(self.property, self.landmark)
 
     def save(self, *args, **kwargs):
-        start_lng, start_lat = (
-            self.property.location.x, self.property.location.y)
-        end_lng, end_lat = (
-            self.landmark.location.x, self.landmark.location.y)
+        start_lng, start_lat = (self.property.location.x, self.property.location.y)
+        end_lng, end_lat = (self.landmark.location.x, self.landmark.location.y)
 
-        result = routes.calculate_distance(
-            (start_lat, start_lng), (end_lat, end_lng))
+        result = routes.calculate_distance((start_lat, start_lng), (end_lat, end_lng))
 
-        distance = result.get('travelDistance', -1)
+        distance = result.get("travelDistance", -1)
 
         if distance < 0:
-            raise Exception('Distance could not be calculated.')
+            raise Exception("Distance could not be calculated.")
 
         CYCLING_SPEED = 15.5  # in KM/h
-        cycling_time = distance/CYCLING_SPEED * 60
+        cycling_time = distance / CYCLING_SPEED * 60
 
         WALKING_SPEED = 5.0  # in KM/h
-        walking_time = distance/WALKING_SPEED * 60
+        walking_time = distance / WALKING_SPEED * 60
 
         self.distance = distance
         self.cycling_time = math.ceil(cycling_time)
