@@ -149,10 +149,7 @@ class Query(graphene.ObjectType):
     def resolve_property(self, info, city_slug, area_slug, property_slug):
         try:
             return PropertyModel.objects.filter(
-                fields=["street"],
-                slug=property_slug,
-                area__slug=area_slug,
-                area__city__slug=city_slug,
+                slug=property_slug, area__slug=area_slug, area__city__slug=city_slug
             )[0]
         except IndexError:
             raise GraphQLError("No property found matching given input.")
