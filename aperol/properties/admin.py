@@ -9,6 +9,7 @@ from aperol.properties.models import (
     PropertyPhoto,
     PropertyLandmarkDistance,
     Landmark,
+    PropertyVariant,
 )
 from mapwidgets.widgets import GooglePointFieldWidget
 
@@ -25,3 +26,4 @@ admin.site.register(Property, PropertyAdmin)
 admin.site.register(PropertyPhoto)
 admin.site.register(PropertyLandmarkDistance)
 admin.site.register(Landmark, PropertyAdmin)
+admin.site.register(PropertyVariant)

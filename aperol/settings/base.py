@@ -1,5 +1,7 @@
 import os
 import dj_database_url
+import traceback
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -57,7 +59,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "aperol.wsgi.application"
 
-GRAPHENE = {"SCHEMA": "aperol.schema.schema"}
+
+# def log_error(error):
+#     print(error)  # we've set this up to send issues to sentry
+#     # raise graphql.GraphQLError("An internal error occurred")
+#     traceback.print_tb(error.__traceback__)
+
+
+# def uncaught_exception_middleware(next, root, info, **args):
+#     return next(root, info, **args).catch(log_error)
+
+
+GRAPHENE = {
+    "SCHEMA": "aperol.schema.schema",
+    # "MIDDLEWARE": ["aperol.settings.base.uncaught_exception_middleware"],
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

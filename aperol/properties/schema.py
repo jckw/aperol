@@ -1,5 +1,5 @@
 import graphene
-from graphene import relay
+from graphene import relay, NonNull
 from graphql import GraphQLError
 from graphene_django.types import DjangoObjectType
 
@@ -8,70 +8,72 @@ from graphql_geojson import converter
 from graphene_django.filter import DjangoFilterConnectionField
 from django.db.models import Max, Min
 from aperol.properties.models import (
-    Property,
-    LettingAgency,
-    City,
-    CityArea,
-    PropertyPhoto,
-    PropertyVariant,
-    PropertyLandmarkDistance,
-    Landmark,
+    Property as PropertyModel,
+    LettingAgency as LettingAgencyModel,
+    City as CityModel,
+    CityArea as CityAreaModel,
+    PropertyPhoto as PropertyPhotoModel,
+    PropertyVariant as PropertyVariantModel,
+    PropertyLandmarkDistance as PropertyLandmarkDistanceModel,
+    Landmark as LandmarkModel,
 )
 from aperol.properties.filters import PropertyFilter
+from aperol.graphql.common import NonNullConnection
 
 
-class LandmarkType(DjangoObjectType):
+class Landmark(DjangoObjectType):
     class Meta:
-        model = Landmark
+        model = LandmarkModel
         interfaces = (relay.Node,)
 
 
 class LandmarkConnection(relay.Connection):
     class Meta:
-        node = LandmarkType
+        node = Landmark
 
 
-class PropertyLandmarkDistanceType(DjangoObjectType):
+class PropertyLandmarkDistance(DjangoObjectType):
     class Meta:
-        model = PropertyLandmarkDistance
+        model = PropertyLandmarkDistanceModel
         interfaces = (relay.Node,)
 
 
-class PropertyLandmarkDistanceConnection(relay.Connection):
+class PropertyLandmarkDistanceConnectionType(relay.Connection):
     class Meta:
-        node = PropertyLandmarkDistanceType
+        node = PropertyLandmarkDistance
 
 
-class PropertyPhotoType(DjangoObjectType):
+class PropertyPhoto(DjangoObjectType):
     class Meta:
-        model = PropertyPhoto
+        model = PropertyPhotoModel
         interfaces = (relay.Node,)
 
 
-class PropertyPhotoConnection(relay.Connection):
+class PropertyPhotoConnectionType(relay.Connection):
     class Meta:
-        node = PropertyPhotoType
+        node = PropertyPhoto
 
 
-class PropertyVariantType(DjangoObjectType):
+class PropertyVariant(DjangoObjectType):
     class Meta:
-        model = PropertyVariant
+        model = PropertyVariantModel
         interfaces = (relay.Node,)
 
 
-class PropertyType(DjangoObjectType):
+class Property(DjangoObjectType):
     class Meta:
-        model = Property
+        model = PropertyModel
         interfaces = (relay.Node,)
         exclude_fields = ("name",)
+        connection_class = NonNullConnection
 
     node = relay.Node.Field()
-    photos = relay.ConnectionField(PropertyPhotoConnection)
+    photos = relay.ConnectionField(PropertyPhotoConnectionType)
     url = graphene.String()
-    landmark_distances = relay.ConnectionField(PropertyLandmarkDistanceConnection)
+    landmark_distances = relay.ConnectionField(PropertyLandmarkDistanceConnectionType)
 
     def resolve_photos(self, info, **kwargs):
-        return PropertyPhoto.objects.filter(property=self)
+        return PropertyPhotoModel.objects.filter(property=self)
 
     def resolve_url(self, info):
         return "/properties/{}/{}/{}".format(
@@ -79,33 +81,33 @@ class PropertyType(DjangoObjectType):
         )
 
     def resolve_landmark_distances(self, info, **kwargs):
-        return PropertyLandmarkDistance.objects.filter(property=self)
+        return PropertyLandmarkDistanceModel.objects.filter(property=self)
 
 
-class PropertyConnection(relay.Connection):
+class PropertyConnectionType(NonNullConnection):
     class Meta:
-        node = PropertyType
+        node = Property
 
 
-class LettingAgencyType(DjangoObjectType):
+class LettingAgency(DjangoObjectType):
     class Meta:
-        model = LettingAgency
+        model = LettingAgencyModel
         interfaces = (relay.Node,)
 
 
-class CityType(DjangoObjectType):
+class City(DjangoObjectType):
     class Meta:
-        model = City
+        model = CityModel
         interfaces = (relay.Node,)
 
 
-class CityAreaType(DjangoObjectType):
+class CityArea(DjangoObjectType):
     class Meta:
-        model = CityArea
+        model = CityAreaModel
         interfaces = (relay.Node,)
 
 
-class MetaType(graphene.ObjectType):
+class Meta(graphene.ObjectType):
     max_price = graphene.Int()
     min_price = graphene.Int()
     max_bedrooms = graphene.Int()
@@ -113,43 +115,47 @@ class MetaType(graphene.ObjectType):
     landmarks = relay.ConnectionField(LandmarkConnection)
 
     def resolve_max_price(self, info):
-        return Property.objects.all().aggregate(Max("price"))["price__max"]
+        return PropertyModel.objects.all().aggregate(Max("price"))["price__max"]
 
     def resolve_min_price(self, info):
-        return Property.objects.all().aggregate(Min("price"))["price__min"]
+        return PropertyModel.objects.all().aggregate(Min("price"))["price__min"]
 
     def resolve_max_bedrooms(self, info):
-        return Property.objects.all().aggregate(Max("bedrooms"))["bedrooms__max"]
+        return PropertyModel.objects.all().aggregate(Max("bedrooms"))["bedrooms__max"]
 
     def resolve_min_bedrooms(self, info):
-        return Property.objects.all().aggregate(Min("bedrooms"))["bedrooms__min"]
+        return PropertyModel.objects.all().aggregate(Min("bedrooms"))["bedrooms__min"]
 
     def resolve_landmarks(self, info):
-        return Landmark.objects.all()
+        return LandmarkModel.objects.all()
 
 
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
 
     property = graphene.Field(
-        PropertyType,
+        Property,
         city_slug=graphene.String(required=True),
         area_slug=graphene.String(required=True),
         property_slug=graphene.String(required=True),
     )
-    agency = relay.Node.Field(LettingAgencyType)
+    agency = relay.Node.Field(LettingAgency)
+    # TODO: Set this to required=True when a fix is found.
     filtered_properties = DjangoFilterConnectionField(
-        PropertyType, filterset_class=PropertyFilter
+        Property, filterset_class=PropertyFilter
     )
-    meta = graphene.Field(MetaType)
+    meta = graphene.Field(Meta, required=True)
 
     def resolve_property(self, info, city_slug, area_slug, property_slug):
         try:
-            return Property.objects.filter(
-                slug=property_slug, area__slug=area_slug, area__city__slug=city_slug
+            return PropertyModel.objects.filter(
+                fields=["street"],
+                slug=property_slug,
+                area__slug=area_slug,
+                area__city__slug=city_slug,
             )[0]
         except IndexError:
             raise GraphQLError("No property found matching given input.")
 
     def resolve_meta(self, info):
-        return MetaType()
+        return Meta()
