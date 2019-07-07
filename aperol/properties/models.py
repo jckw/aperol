@@ -1,3 +1,4 @@
+from django.db.models import Q, CheckConstraint
 from django.contrib.gis.db import models
 from django.contrib.auth import get_user_model
 import geocoder
@@ -58,12 +59,15 @@ class Property(models.Model):
     # TODO: Trim number and make case insensitive for uniqueness
     # TODO: Are number, street, and postcode unique? No, not necessarily but
     #       the post office must rely on it being
-    name = models.CharField(max_length=50, help_text="Property number or name")
+    name = models.CharField(
+        max_length=50, help_text="Property number or name", null=True, blank=True
+    )
     street = models.CharField(max_length=50)
     area = models.ForeignKey("CityArea", on_delete=models.CASCADE)
     postcode = models.CharField(max_length=10)
-    location = models.PointField(blank=True)
+    location = models.PointField(blank=True, null=True)
     slug = AutoSlugField(populate_from=["street", "pk"], unique=True)
+    listing_url = models.URLField(null=True, blank=True)
     variant = models.ForeignKey(
         "PropertyVariant", on_delete=models.CASCADE, default=get_apartment_variant
     )
@@ -87,13 +91,13 @@ class Property(models.Model):
 
     # Features
     bedrooms = models.PositiveIntegerField()
-    double_bedrooms = models.PositiveIntegerField()
-    single_bedrooms = models.PositiveIntegerField()
+    double_bedrooms = models.PositiveIntegerField(null=True, blank=True)
+    single_bedrooms = models.PositiveIntegerField(null=True, blank=True)
     total_area = models.PositiveIntegerField(
         verbose_name="Total area in square metres", null=True, blank=True
     )
-    bathrooms = models.PositiveIntegerField()
-    ensuites = models.PositiveIntegerField()
+    bathrooms = models.PositiveIntegerField(null=True, blank=True)
+    ensuites = models.PositiveIntegerField(null=True, blank=True)
 
     # True values must indicate having something
     furnished = models.NullBooleanField()
@@ -138,9 +142,18 @@ class Property(models.Model):
 
 
 class PropertyPhoto(models.Model):
-    photo = models.ImageField()
+    uploaded_photo = models.ImageField(null=True)
+    photo_url = models.URLField(blank=True, null=True)
     agency_photo = models.BooleanField()
     property = models.ForeignKey("Property", on_delete=models.CASCADE)
+
+    # class Meta:
+    #     constraints = [
+    #         CheckConstraint(
+    #             check=Q(uploaded_photo__isnull=False) | Q(photo_url__isnull=False),
+    #             name="at_least_one_photo_source",
+    #         )
+    #     ]
 
     def __str__(self):
         return "{}, {} - {}".format(

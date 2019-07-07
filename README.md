@@ -72,3 +72,9 @@ Release the image!
 ```
 $ heroku container:release web
 ```
+
+## Current TODOs
+- [ ] Write a command to import scraped data
+- [ ] Sort out file upload location for dev
+- [ ] Set up authentication with something like Authlib
+- [ ] Consider removing landmarks and distances

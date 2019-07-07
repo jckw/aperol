@@ -49,7 +49,7 @@ class PropertyPhoto(DjangoObjectType):
         interfaces = (relay.Node,)
 
 
-class PropertyPhotoConnectionType(relay.Connection):
+class PropertyPhotoConnectionType(NonNullConnection):
     class Meta:
         node = PropertyPhoto
 
