@@ -74,7 +74,12 @@ $ heroku container:release web
 ```
 
 ## Current TODOs
+- [ ] Resolve security conflicts
+- [ ] Check through requirements
 - [ ] Write a command to import scraped data
-- [ ] Sort out file upload location for dev
+- [ ] Set up a custom user model
 - [ ] Set up authentication with something like Authlib
+- [ ] Sort out file upload location for dev
 - [ ] Consider removing landmarks and distances
+- [ ] Resize files on upload
+- [ ] Consider downloading all scraped files instead of deep linking
