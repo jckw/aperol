@@ -11,7 +11,7 @@ geocoder==1.38.1
 graphene==2.1.3
 graphene-django==2.2.0
 graphql-core==2.1
-Pillow==5.2.0
+Pillow==8.3.2
 psycopg2==2.7.5 --no-binary :all:
 requests==2.18.4
 urllib3==1.23
